@@ -1,0 +1,4 @@
+{
+    "appPort":"3003",
+    "appGracefulShutdownTimeinSeconds":"10"
+}
