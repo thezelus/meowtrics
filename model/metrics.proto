@@ -1,0 +1,50 @@
+package model;
+
+// The event type enum:
+enum ClientEventType
+{
+    UNKNOWN = 1;
+    USER_REGISTERED = 2;
+}
+
+// Representing a single event.
+message ClientEventData
+{
+    // Core event attributes:
+    required string event_id = 1;
+    required ClientEventType event_type = 2;
+    required int64 timestamp = 3;
+
+    // arbitrary data
+    optional string data = 4;
+
+    // allow arbitrary key-value pairs
+    repeated string key = 5;
+}
+
+// The message uploaded to the server - containing multiple events
+message ClientEventUploadRequest
+{
+    required string request_id = 1;
+
+    // The clients device type (Android, iPhone etc.)
+    required string device_type = 2;
+
+    // The events being uploaded
+    repeated ClientEventData events = 3;
+}
+
+//The message to send as the error response payload if something goes wrong
+message ErrorResponse
+{
+    required string code = 1;
+    optional string error_message = 2;
+    optional string description = 3;
+}
+
+//The message to check if server is up and running
+message HeartBeat
+{
+    required string status = 1;
+    required string timestamp = 2;
+}
