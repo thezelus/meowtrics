@@ -1,5 +1,5 @@
 ##What is Meowtrics?##
-Meowtrics is a metrics collection server written in Go. For this first version it provides a very basic API for storing and retrieving events. Current version is built using [negroni](https://github.com/codegangsta/negroni) and [gorilla mux](http://www.gorillatoolkit.org/pkg/mux), [protocol buffers](https://developers.google.com/protocol-buffers/) and stores data in memory.
+Meowtrics is a metrics collection server written in Go. For this first version it provides a very basic API for storing and retrieving events. Current version is built using [negroni](https://github.com/codegangsta/negroni), [gorilla mux](http://www.gorillatoolkit.org/pkg/mux), [protocol buffers](https://developers.google.com/protocol-buffers/), and stores data in memory.
 
 ###Why call it *Meowtrics*?###
 Because it is a metrics collection server, but.....
