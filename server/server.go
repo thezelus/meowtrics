@@ -1,7 +1,6 @@
 package main
 
 import (
-	"OilAPI/utilities"
 	"fmt"
 	"meowtrics/model"
 	"os"
@@ -36,7 +35,7 @@ func initApp() {
 		fmt.Println("Error initializing logger, defaulting to stdout. Error: " + err.Error())
 	}
 
-	err = LoadAppProperties(configFileName, utilities.DeploymentConfigDefaultPath, meowtricsLogger)
+	err = LoadAppProperties(configFileName, DeploymentConfigDefaultPath, meowtricsLogger)
 	if err != nil {
 		meowtricsLogger.Panicln("Error reading app properties:" + err.Error())
 	}
