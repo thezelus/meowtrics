@@ -19,7 +19,7 @@ message ClientEventData
     optional string data = 4;
 
     // allow arbitrary key-value pairs
-    repeated string key = 5;
+    repeated KeyValuePair kv_pair = 5;
 }
 
 // The message uploaded to the server - containing multiple events
@@ -32,6 +32,13 @@ message ClientEventUploadRequest
 
     // The events being uploaded
     repeated ClientEventData events = 3;
+}
+
+// The message for key value pairs
+message KeyValuePair
+{
+    required string key = 1;
+    required string value = 2;
 }
 
 //The message to send as the error response payload if something goes wrong

@@ -11,6 +11,7 @@ It is generated from these files:
 It has these top-level messages:
 	ClientEventData
 	ClientEventUploadRequest
+	KeyValuePair
 	ErrorResponse
 	HeartBeat
 */
@@ -66,8 +67,8 @@ type ClientEventData struct {
 	// arbitrary data
 	Data *string `protobuf:"bytes,4,opt,name=data" json:"data,omitempty"`
 	// allow arbitrary key-value pairs
-	Key              []string `protobuf:"bytes,5,rep,name=key" json:"key,omitempty"`
-	XXX_unrecognized []byte   `json:"-"`
+	KvPair           []*KeyValuePair `protobuf:"bytes,5,rep,name=kv_pair" json:"kv_pair,omitempty"`
+	XXX_unrecognized []byte          `json:"-"`
 }
 
 func (m *ClientEventData) Reset()         { *m = ClientEventData{} }
@@ -102,9 +103,9 @@ func (m *ClientEventData) GetData() string {
 	return ""
 }
 
-func (m *ClientEventData) GetKey() []string {
+func (m *ClientEventData) GetKvPair() []*KeyValuePair {
 	if m != nil {
-		return m.Key
+		return m.KvPair
 	}
 	return nil
 }
@@ -142,6 +143,31 @@ func (m *ClientEventUploadRequest) GetEvents() []*ClientEventData {
 		return m.Events
 	}
 	return nil
+}
+
+// The message for key value pairs
+type KeyValuePair struct {
+	Key              *string `protobuf:"bytes,1,req,name=key" json:"key,omitempty"`
+	Value            *string `protobuf:"bytes,2,req,name=value" json:"value,omitempty"`
+	XXX_unrecognized []byte  `json:"-"`
+}
+
+func (m *KeyValuePair) Reset()         { *m = KeyValuePair{} }
+func (m *KeyValuePair) String() string { return proto.CompactTextString(m) }
+func (*KeyValuePair) ProtoMessage()    {}
+
+func (m *KeyValuePair) GetKey() string {
+	if m != nil && m.Key != nil {
+		return *m.Key
+	}
+	return ""
+}
+
+func (m *KeyValuePair) GetValue() string {
+	if m != nil && m.Value != nil {
+		return *m.Value
+	}
+	return ""
 }
 
 // The message to send as the error response payload if something goes wrong
