@@ -3,6 +3,7 @@ package main
 import (
 	"OilAPI/utilities"
 	"fmt"
+	"meowtrics/model"
 	"os"
 	"strconv"
 	"time"
@@ -20,6 +21,7 @@ var (
 	logFileName     = "log-meowtrics.log"
 	configFileName  = "meowtricsConfig"
 	router          *mux.Router
+	eventMap        map[string]model.ClientEventData
 )
 
 func init() {
@@ -39,12 +41,7 @@ func initApp() {
 		meowtricsLogger.Panicln("Error reading app properties:" + err.Error())
 	}
 
-	/*
-		dbConnection, err = GetDBConnection(meowtricsLogger, utilities.DeploymentConfigDefaultPath, configFileName)
-		if err != nil {
-			meowtricsLogger.Panicln("Error opening database connection from keyauth. Error: " + err.Error())
-		}
-	*/
+	eventMap = make(map[string]model.ClientEventData)
 }
 
 func initRouter() {

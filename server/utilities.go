@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
@@ -23,6 +24,11 @@ const (
 	HeaderAbsent             = "HEADER_MISSING"
 	RecordNotFound           = "REQUESTED_RECORD_NOT_FOUND"
 	FatalError               = "FATAL_ERROR"
+)
+
+var (
+	InvalidParametersError = errors.New(InvalidRequestParameters)
+	RecordNotFoundError    = errors.New(RecordNotFound)
 )
 
 func InitializeLogger(file *os.File, logFileName string, logger *log.Logger, format log.Formatter) error {
