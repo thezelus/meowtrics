@@ -1,15 +1,10 @@
 package main
 
-import (
-	"meowtrics/model"
+import "meowtrics/model"
 
-	log "github.com/Sirupsen/logrus"
-)
-
-func StoreEvent(event model.ClientEventData, logger *log.Logger) error {
+func StoreEvent(event model.ClientEventData) error {
 
 	if event.GetEventId() == "" {
-		log.Warningln("Event Id is nil, returning error")
 		return InvalidParametersError
 	}
 
