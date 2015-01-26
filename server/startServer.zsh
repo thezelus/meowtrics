@@ -1,1 +1,1 @@
-go run server.go handlers.go utilities.go
+go run server.go handlers.go utilities.go processor.go datasource.go

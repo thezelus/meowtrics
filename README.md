@@ -1,6 +1,13 @@
 ##What is Meowtrics?##
 Meowtrics is a metrics collection server written in Go. For this first version it provides a very basic API for storing and retrieving events. Current version is built using [negroni](https://github.com/codegangsta/negroni), [gorilla mux](http://www.gorillatoolkit.org/pkg/mux), [protocol buffers](https://developers.google.com/protocol-buffers/), and stores data in memory.
 
+###Notes###
+- I like to create a config directory with the name same as the project under '$GOPATH/bin/config/', and this is set as the DefaultDeploymentPath for the config file ('$GOPATH/bin/config/meowtrics/' for this project).
+- Viper is configured to check first in the default deployment directory and then in the injected config path.
+- Each ClientEventUploadRequest POST can have multiple events, to achieve transcational behavior the datastore will be switched to boltdb in a later version. For now the client events bundle is validated to achieve atomicity, either all of them are stored or an error response is sent back. 
+- Partial storage is performed in case of errors from in memory database StoreEvent() method
+- Header -->  "Content-Type" ---> "application/json" OR "application/x-protobuf"
+
 ###Why call it *Meowtrics*?###
 Because it is a metrics collection server, but.....
 
@@ -13,7 +20,3 @@ And [Super Troopers](http://www.imdb.com/title/tt0247745/) is an awesome movie.
 
 ###Why not use an existing solution?###
 I will try this out for meow, this is more of a learning exercise to use [protobuf](https://github.com/golang/protobuf) in Go. If you want to extend this solution or if you have feature suggestions, you should fork this repository right meow.
-
-###Notes###
-- I like to create a config directory with the name same as the project under '$GOPATH/bin/config/', and this is set as the DefaultDeploymentPath for the config file ('$GOPATH/bin/config/meowtrics/' for this project).
-- Viper is configured to check first in the default deployment directory and then in the injected config path.
