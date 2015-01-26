@@ -3,11 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"net/http"
-	"net/http/httptest"
 	"os"
-	"strings"
-	"testing"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -21,14 +17,17 @@ const (
 	ContentNotFound          = "NOT_FOUND"
 	InvalidRequestParameters = "INVALID_REQUEST_PARAMETERS"
 	MalformedRequest         = "MALFORMED_REQUEST"
-	HeaderAbsent             = "HEADER_MISSING"
+	HeaderNotRecognized      = "HEADER_NOT_RECOGNIZED"
 	RecordNotFound           = "REQUESTED_RECORD_NOT_FOUND"
-	FatalError               = "FATAL_ERROR"
+	Fatal                    = "FATAL_OPERATION"
+	UnsupportedMedia         = "UNSUPPORTED_MEDIA_TYPE"
 )
 
 var (
 	InvalidParametersError = errors.New(InvalidRequestParameters)
 	RecordNotFoundError    = errors.New(RecordNotFound)
+	FatalError             = errors.New(Fatal)
+	UnsupportedMediaError  = errors.New(UnsupportedMedia)
 )
 
 func InitializeLogger(file *os.File, logFileName string, logger *log.Logger, format log.Formatter) error {
@@ -65,31 +64,4 @@ func LoadAppProperties(configName string, configPath string, logger *log.Logger)
 	}
 
 	return nil
-}
-
-//--------Test utils------
-
-type HandleTester func(method string, params string) *httptest.ResponseRecorder
-
-// Given the current test runner and an http.Handler, generate a
-// HandleTester which will test its the handler against its input
-
-func GenerateHandleTester(t *testing.T, handleFunc http.Handler) HandleTester {
-
-	// Given a method type ("GET", "POST", etc) and
-	// parameters, serve the response against the handler
-	// and return the ResponseRecorder.
-
-	return func(method string, params string) *httptest.ResponseRecorder {
-
-		req, err := http.NewRequest(method, "", strings.NewReader(params))
-		if err != nil {
-			t.Errorf("%v", err)
-		}
-		req.Header.Set("Content-Type", "application/json")
-		req.Body.Close()
-		w := httptest.NewRecorder()
-		handleFunc.ServeHTTP(w, req)
-		return w
-	}
 }

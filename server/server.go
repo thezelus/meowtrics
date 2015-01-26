@@ -48,12 +48,12 @@ func initRouter() {
 	router = mux.NewRouter()
 	router.StrictSlash(true)
 
-	//v1Route := router.PathPrefix("/v1/")
+	v1Route := router.PathPrefix("/v1/")
 
-	//get := v1Route.Methods("GET").Subrouter()
+	post := v1Route.Methods("POST").Subrouter()
+	post.Handle("/events", CreateEventHandler())
 
 	router.Handle("/heartbeat", HeartBeatHandler())
-
 	router.NotFoundHandler = NotFoundHandler()
 }
 
