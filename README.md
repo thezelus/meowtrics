@@ -7,6 +7,7 @@ Meowtrics is a metrics collection server written in Go. For this first version i
 - Each ClientEventUploadRequest POST can have multiple events, to achieve transcational behavior the datastore will be switched to boltdb in a later version. For now the client events bundle is validated to achieve atomicity, either all of them are stored or an error response is sent back. 
 - Partial storage is performed in case of errors from in memory database StoreEvent() method
 - Header -->  "Content-Type" ---> "application/json" OR "application/x-protobuf"
+- POST calls have no restriction on eventId type (can be string or integers), GET calls only accept numeric values as id
 
 ###TODO List###
 - [ ] Update documentation to include details about the API endpoints
