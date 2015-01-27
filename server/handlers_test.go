@@ -252,6 +252,28 @@ func TestRetrieveEventHandler_ValidRouteVariable_JSON(t *testing.T) {
 	assert.Equal(t, testEvent.GetData(), actualEvent.GetData(), "Event data should be equal")
 }
 
+func TestRetrieveEventHandler_ValidRouteVariable_NoContentType(t *testing.T) {
+	eventMap = make(map[string]model.ClientEventData)
+	testEvent := generateTestClientEvent()
+	StoreEvent(testEvent)
+
+	_, ok := eventMap["123"]
+	assert.True(t, ok, "Map should contain event")
+
+	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
+	w := testGet("/v1/events/123", "")
+
+	assert.Equal(t, http.StatusOK, w.Code, "Http status should be 200")
+
+	actualEvent := new(model.ClientEventData)
+	err := json.Unmarshal([]byte(w.Body.String()), actualEvent)
+	if err != nil {
+		panic("Error unmarshalling json response: " + err.Error())
+	}
+
+	assert.Equal(t, testEvent.GetData(), actualEvent.GetData(), "Event data should be equal")
+}
+
 func TestRetrieveEventHandler_RecordNotFound_JSON(t *testing.T) {
 	eventMap = make(map[string]model.ClientEventData)
 	testEvent := generateTestClientEvent()
