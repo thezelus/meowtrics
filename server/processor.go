@@ -12,6 +12,59 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+//------------------GET-----------------------
+
+func processJsonGet(id string, logger *log.Logger) (int, *model.ClientEventData) {
+
+	event, err := RetrieveEvent(id)
+	switch err {
+	case nil:
+		return http.StatusOK, event
+	case RecordNotFoundError:
+		logger.WithFields(log.Fields{"method": "processJsonGet", "id": id, "error": RecordNotFoundError.Error()}).Infoln("Record not found")
+		return http.StatusNotFound, nil
+	case InvalidParametersError:
+		logger.WithFields(log.Fields{"method": "processJsonGet", "error": InvalidParametersError.Error()}).Warningln("Invalid id passed through router")
+		return http.StatusInternalServerError, nil
+	}
+	
+//This should never be executed
+	return http.StatusInternalServerError, nil
+}
+
+func processProtobufGet(id string, logger *log.Logger) (int, []byte) {
+
+	event, err := RetrieveEvent(id)
+	if err != nil {
+		switch err {
+		case RecordNotFoundError:
+			logger.WithFields(log.Fields{"method": "processProtobufGet", "id": id, "error": RecordNotFoundError.Error()}).Infoln("Record not found")
+			return http.StatusNotFound, nil
+		case InvalidParametersError:
+			logger.WithFields(log.Fields{"method": "processProtobufGet", "error": InvalidParametersError.Error()}).Warningln("    Invalid id passed through router")
+			return http.StatusInternalServerError, nil
+		}
+	}
+
+	protoBytes, err := proto.Marshal(event)
+	if err != nil {
+		logger.WithFields(log.Fields{"method": "processProtobufGet", "id": id, "error": err.Error()}).Warningln("Error marshaling model to protocol buffer byte array")
+		return http.StatusInternalServerError, nil
+	}
+
+	return http.StatusOK, protoBytes
+}
+
+func processUnsupportedMediaTypeGet(req *http.Request, logger *log.Logger) (int, *model.ErrorResponse) {
+	logger.WithFields(log.Fields{"method": "processUnsupportedMediaTypeGet", "error": UnsupportedMedia}).Infoln("Accept: " + req.Header.Get("Accept"))
+
+	errCode := UnsupportedMedia
+	errMsg := "Accept specifies a media type that is not supported by this resource"
+	return http.StatusUnsupportedMediaType, &model.ErrorResponse{Code: &errCode, ErrorMessage: &errMsg}
+}
+
+//-----------------POST-----------------------
+
 func processJsonPost(req *http.Request, logger *log.Logger) (int, *model.ErrorResponse) {
 
 	uploadRequest, err := decodeJson(req.Body)

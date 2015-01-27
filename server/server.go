@@ -20,6 +20,8 @@ var (
 	logFileName     = "log-meowtrics.log"
 	configFileName  = "meowtricsConfig"
 	router          *mux.Router
+	postSubrouter   *mux.Router
+	getSubrouter    *mux.Router
 	eventMap        map[string]model.ClientEventData
 )
 
@@ -50,8 +52,11 @@ func initRouter() {
 
 	v1Route := router.PathPrefix("/v1/")
 
-	post := v1Route.Methods("POST").Subrouter()
-	post.Handle("/events", CreateEventHandler())
+	postSubrouter = v1Route.Methods("POST").Subrouter()
+	postSubrouter.Handle("/events", CreateEventHandler())
+
+	getSubrouter = v1Route.Methods("GET").Subrouter()
+	getSubrouter.Handle("/events/{id:[0-9]+}", RetrieveEventHandler())
 
 	router.Handle("/heartbeat", HeartBeatHandler())
 	router.NotFoundHandler = NotFoundHandler()
