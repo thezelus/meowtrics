@@ -9,10 +9,20 @@ Meowtrics is a metrics collection server written in Go. For this first version i
 - Header -->  "Content-Type" ---> "application/json" OR "application/x-protobuf"
 - POST calls have no restriction on eventId type (can be string or integers), GET calls only accept numeric values as id
 
+###Done List###
+- [X] Implement in memory database access to use for testing. 
+- [X] Implement POST and GET handlers. 
+- [X] The POST handler(s) should allow both protobuf and JSON encoding as input depending on the Content-Type header. 
+- [X] The GET handler(s) should allow both protobuf and JSON as output depending on the Accept header and if no Accept 	header is present, or set to “*/*”, output should be JSON by default. 
+- [X] The GET request handlers should only accept numerical id’s and return a 404 otherwise. 
+- [X] Modify metrics.proto so that clients can submit arbitrary key/value pairs as part of the ClientEventData object. 
+- [X] Add test cases demonstrating successful storage and retrieval plus error cases. 
+
 ###TODO List###
 - [ ] Update documentation to include details about the API endpoints
-- [ ] Write make files and deployment scripts
-- [ ] Dockerize this
+- [ ] Write deployment scripts
+- [ ] Include more tests
+- [ ] Dockerize meowtrics
 - [ ] Modify datasource to use [bolt](https://github.com/boltdb/bolt) instead of a map
 
 ###Why call it *Meowtrics*?###
