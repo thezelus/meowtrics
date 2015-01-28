@@ -1,0 +1,10 @@
+{
+	"ImportPath": "meowtrics/model",
+	"GoVersion": "go1.4",
+	"Deps": [
+		{
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "7f07925444bb51fa4cf9dfe6f7661876f8852275"
+		}
+	]
+}
