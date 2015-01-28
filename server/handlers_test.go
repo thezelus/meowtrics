@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/proto"
+	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,12 +42,15 @@ func GeneratePostHandleTester(t *testing.T, handleFunc http.Handler, contentType
 }
 
 //Util function specifically for setting accept header for testing GET requests
+//This returns a func of type GetHandleTester which takes the url, acceptHeader, and the router pointer
+//For this case we are passing in the global getSubrouter which has RetrieveHandler() as the Handle function
+//It also extracts the path variables from the URL
 
-type GetHandleTester func(location string, acceptHeader string) *httptest.ResponseRecorder
+type GetHandleTester func(location string, acceptHeader string, router *mux.Router) *httptest.ResponseRecorder
 
-func GenerateGetHandleTester(t *testing.T, handleFunc http.Handler) GetHandleTester {
+func GenerateGetHandleTester(t *testing.T) GetHandleTester {
 
-	return func(location string, acceptHeader string) *httptest.ResponseRecorder {
+	return func(location string, acceptHeader string, router *mux.Router) *httptest.ResponseRecorder {
 
 		req, err := http.NewRequest("GET", location, strings.NewReader(""))
 		if err != nil {
@@ -55,7 +59,7 @@ func GenerateGetHandleTester(t *testing.T, handleFunc http.Handler) GetHandleTes
 		req.Header.Set("Accept", acceptHeader)
 		req.Body.Close()
 		w := httptest.NewRecorder()
-		getSubrouter.ServeHTTP(w, req)
+		router.ServeHTTP(w, req)
 		return w
 	}
 }
@@ -127,6 +131,8 @@ func TestCreateEventHandler_ValidJsonRequest(t *testing.T) {
 		panic("Cannot marshal data. Error: " + err.Error())
 	}
 
+	//fmt.Println("JSON request: " + string(jsonReq))
+
 	w := test("POST", string(jsonReq))
 	assert.Equal(t, http.StatusOK, w.Code, "Valid JSON request should be properly posted")
 
@@ -170,9 +176,9 @@ func TestCreateEventHandler_UnsupportedMediaTypePost(t *testing.T) {
 }
 
 func TestRetrieveEventHandler_UnsupportedMediaTypeGet(t *testing.T) {
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
+	testGet := GenerateGetHandleTester(t)
 
-	w := testGet("/v1/events/1", "application/meow")
+	w := testGet("/v1/events/1", "application/meow", getSubrouter)
 	assert.Equal(t, http.StatusUnsupportedMediaType, w.Code, "UnsupportedMedia should be the header")
 }
 
@@ -238,12 +244,13 @@ func TestRetrieveEventHandler_ValidRouteVariable_JSON(t *testing.T) {
 	_, ok := eventMap["123"]
 	assert.True(t, ok, "Map should contain event")
 
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
-	w := testGet("/v1/events/123", "application/json")
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/123", "application/json", getSubrouter)
 
 	assert.Equal(t, http.StatusOK, w.Code, "Http status should be 200")
 
 	actualEvent := new(model.ClientEventData)
+	//fmt.Println("Response body: " + w.Body.String())
 	err := json.Unmarshal([]byte(w.Body.String()), actualEvent)
 	if err != nil {
 		panic("Error unmarshalling json response: " + err.Error())
@@ -260,8 +267,30 @@ func TestRetrieveEventHandler_ValidRouteVariable_NoContentType(t *testing.T) {
 	_, ok := eventMap["123"]
 	assert.True(t, ok, "Map should contain event")
 
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
-	w := testGet("/v1/events/123", "")
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/123", "", getSubrouter)
+
+	assert.Equal(t, http.StatusOK, w.Code, "Http status should be 200")
+
+	actualEvent := new(model.ClientEventData)
+	err := json.Unmarshal([]byte(w.Body.String()), actualEvent)
+	if err != nil {
+		panic("Error unmarshalling json response: " + err.Error())
+	}
+
+	assert.Equal(t, testEvent.GetData(), actualEvent.GetData(), "Event data should be equal")
+}
+
+func TestRetrieveEventHandler_ValidRouteVariable_GenericContentType(t *testing.T) {
+	eventMap = make(map[string]model.ClientEventData)
+	testEvent := generateTestClientEvent()
+	StoreEvent(testEvent)
+
+	_, ok := eventMap["123"]
+	assert.True(t, ok, "Map should contain event")
+
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/123", "*/*", getSubrouter)
 
 	assert.Equal(t, http.StatusOK, w.Code, "Http status should be 200")
 
@@ -282,8 +311,8 @@ func TestRetrieveEventHandler_RecordNotFound_JSON(t *testing.T) {
 	_, ok := eventMap["123"]
 	assert.True(t, ok, "Map should contain event")
 
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
-	w := testGet("/v1/events/12", "application/json")
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/12", "application/json", getSubrouter)
 
 	assert.Equal(t, http.StatusNotFound, w.Code, "Http status should be 404")
 }
@@ -298,8 +327,8 @@ func TestRetrieveEventHandler_InValidRouteVariable_JSON(t *testing.T) {
 	_, ok := eventMap[newEventId]
 	assert.True(t, ok, "Map should contain event")
 
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
-	w := testGet("/v1/events/abc", "application/json")
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/abc", "application/json", getSubrouter)
 
 	assert.Equal(t, http.StatusNotFound, w.Code, "Http status should be 404")
 }
@@ -315,8 +344,8 @@ func TestRetrieveEventHandler_ValidRouteVariable_Protobuf(t *testing.T) {
 	assert.True(t, ok, "Map should contain event")
 	assert.Equal(t, len(eventMap), 1, "eventMap should have only 1 entry")
 
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
-	w := testGet("/v1/events/123", "application/x-protobuf")
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/123", "application/x-protobuf", getSubrouter)
 
 	assert.Equal(t, http.StatusOK, w.Code, "Http status should be 200")
 
@@ -337,8 +366,8 @@ func TestRetrieveEventHandler_RecordNotFound_Protobuf(t *testing.T) {
 	_, ok := eventMap["123"]
 	assert.True(t, ok, "Map should contain event")
 
-	testGet := GenerateGetHandleTester(t, RetrieveEventHandler())
-	w := testGet("/v1/events/12", "application/x-protobuf")
+	testGet := GenerateGetHandleTester(t)
+	w := testGet("/v1/events/12", "application/x-protobuf", getSubrouter)
 
 	assert.Equal(t, http.StatusNotFound, w.Code, "Http status should be 404")
 }
