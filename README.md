@@ -8,6 +8,7 @@ Meowtrics is a metrics collection server written in Go. For this first version i
 **Request**
 
 For checking the service status, heartbeat calls can be made.
+
 Path - `/heartbeat`
 
 **Response**
