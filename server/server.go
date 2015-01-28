@@ -50,12 +50,10 @@ func initRouter() {
 	router = mux.NewRouter()
 	router.StrictSlash(true)
 
-	v1Route := router.PathPrefix("/v1/")
-
-	postSubrouter = v1Route.Methods("POST").Subrouter()
+	postSubrouter = router.PathPrefix("/v1/").Methods("POST").Subrouter()
 	postSubrouter.Handle("/events", CreateEventHandler())
 
-	getSubrouter = v1Route.Methods("GET").Subrouter()
+	getSubrouter = router.PathPrefix("/v1/").Methods("GET").Subrouter()
 	getSubrouter.Handle("/events/{id:[0-9]+}", RetrieveEventHandler())
 
 	router.Handle("/heartbeat", HeartBeatHandler())
