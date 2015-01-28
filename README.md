@@ -9,7 +9,7 @@ Meowtrics is a metrics collection server written in Go. For this first version i
 
 For checking the service status, heartbeat calls can be made.
 
-Path - `/heartbeat`
+- Path - `/heartbeat`
 
 **Response**
 
@@ -24,11 +24,11 @@ The response would be in the following JSON format.
 
 ####ClientEventUploadRequest####
 
-Method - `POST`
+- Method - `POST`
 
-Path - `/v1/events` 
+- Path - `/v1/events` 
 
-Content-Type - `application/json` or `application/x-protobuf`
+- Content-Type - `application/json` or `application/x-protobuf`
 
 **Request body format for JSON**
 
@@ -58,11 +58,11 @@ For successful POST, the response body will be empty. For error cases, please ch
 
 **Request**
 
-Method - `GET`
+- Method - `GET`
 
-Path - `/v1/events/id` (id should be replaced by the eventId)
+- Path - `/v1/events/id` (id should be replaced by the eventId)
 
-Accept header - `application/json` or `application/x-protobuf` or `*/*` or none
+- Accept header - `application/json` or `application/x-protobuf` or `*/*` or none
 
 Note: This version of the meowtrics server only accepts numerical ids for GET requests, non-numerical ids would get a NOT_FOUND error response.
 
@@ -95,6 +95,7 @@ In case of errors, the response body will include the error response in followin
 
 **Error codes**
 
+```
 - NOT_FOUND
 - INVALID_REQUEST_PARAMETERS
 - MALFORMED_REQUEST
@@ -102,7 +103,7 @@ In case of errors, the response body will include the error response in followin
 - REQUESTED_RECORD_NOT_FOUND
 - FATAL_OPERATION
 - UNSUPPORTED_MEDIA_TYPE
-
+```
 
 ###Notes###
 - I like to create a config directory with the name same as the project under '$GOPATH/bin/config/', and this is set as the DefaultDeploymentPath for the config file ('$GOPATH/bin/config/meowtrics/' for this project).
