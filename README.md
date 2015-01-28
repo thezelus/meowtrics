@@ -68,7 +68,7 @@ Note: This version of the meowtrics server only accepts numerical ids for GET re
 
 **Response**
 
-Successful response to `GET` request is returned in following JSON format -
+Successful response to `GET` request is returned in following JSON format (if the accept header is `application/json` or `*/*` or none ) -
 
 ```javascript
 {
@@ -80,6 +80,8 @@ Successful response to `GET` request is returned in following JSON format -
 ```
 
 ####Error details####
+
+Error response is always returned in JSON format for the ease of debugging.
 
 **Response**
 
@@ -126,6 +128,7 @@ In case of errors, the response body will include the error response in followin
 - [X] Update documentation to include details about the API endpoints
 - [X] Write deployment scripts
 - [X] Include more tests
+- [ ] Update documentation to include details about response header status
 - [ ] Dockerize meowtrics
 - [ ] Modify datasource to use [bolt](https://github.com/boltdb/bolt) instead of a map
 
