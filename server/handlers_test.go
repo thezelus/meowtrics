@@ -348,6 +348,7 @@ func TestRetrieveEventHandler_ValidRouteVariable_Protobuf(t *testing.T) {
 	w := testGet("/v1/events/123", "application/x-protobuf", getSubrouter)
 
 	assert.Equal(t, http.StatusOK, w.Code, "Http status should be 200")
+	assert.Equal(t, APPLICATION_PROTOBUF, w.Header().Get("Content-Type"), "Content type should be application/x-protobuf")
 
 	actualEvent := new(model.ClientEventData)
 	err := proto.Unmarshal([]byte(w.Body.String()), actualEvent)

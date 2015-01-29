@@ -59,6 +59,7 @@ func RetrieveEventHandler() http.Handler {
 		switch acceptHeader {
 		case APPLICATION_PROTOBUF:
 			status, data := processProtobufGet(id, meowtricsLogger)
+			w.Header().Set("Content-Type", APPLICATION_PROTOBUF)
 			r.Data(w, status, data)
 		case APPLICATION_JSON, APPLICATION_ALL, "":
 			status, event := processJsonGet(id, meowtricsLogger)
