@@ -7,7 +7,7 @@ Meowtrics is a metrics collection server written in Go. For this first version i
 
 **Request**
 
-For checking the service status, heartbeat calls can be made.
+For checking the service status, heartbeat requests can be sent.
 
 - Path - `/heartbeat`
 
@@ -107,6 +107,19 @@ In case of errors, the response body will include the error response in followin
 - UNSUPPORTED_MEDIA_TYPE
 ```
 
+####Response Status####
+
+`200 OK` - For successful POST and GET requests
+
+`404 Not Found` - For invalid resource urls or invalid id requests when making a GET request
+
+`500 Internal Server Error`
+
+`415 Unsupported Media Type` - For invalid Content-Type and Accept headers
+
+`400 Bad Request` - For POST requests with ClientEventData with no eventId
+
+
 ###Notes###
 - I like to create a config directory with the name same as the project under '$GOPATH/bin/config/', and this is set as the DefaultDeploymentPath for the config file ('$GOPATH/bin/config/meowtrics/' for this project).
 - Viper is configured to check first in the default deployment directory and then in the injected config path.
@@ -128,7 +141,7 @@ In case of errors, the response body will include the error response in followin
 - [X] Update documentation to include details about the API endpoints
 - [X] Write deployment scripts
 - [X] Include more tests
-- [ ] Update documentation to include details about response header status
+- [X] Update documentation to include details about response header status
 - [ ] Dockerize meowtrics
 - [ ] Modify datasource to use [bolt](https://github.com/boltdb/bolt) instead of a map
 
