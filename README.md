@@ -159,4 +159,4 @@ And [Super Troopers](http://www.imdb.com/title/tt0247745/) is an awesome movie.
 I will try this out for meow, this is more of a learning exercise to use [protobuf](https://github.com/golang/protobuf) in Go. If you want to extend this solution or if you have feature suggestions, you should fork this repository right meow.
 
 
-(P.S. - Inspiration from a  [test project](https://github.com/kikinteractive/server-metrics-test))
+(P.S. - Inspiration from a  [test project](https://github.com/kikinteractive/server-metrics-test)) 
