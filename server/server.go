@@ -11,7 +11,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
-	"github.com/stretchr/graceful"
+	"gopkg.in/tylerb/graceful.v1"
 )
 
 var (

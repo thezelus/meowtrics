@@ -1,6 +1,6 @@
 {
 	"ImportPath": "meowtrics/server",
-	"GoVersion": "go1.4",
+	"GoVersion": "go1.6",
 	"Deps": [
 		{
 			"ImportPath": "github.com/BurntSushi/toml",
@@ -39,6 +39,11 @@
 			"Rev": "6807e777504f54ad073ecef66747de158294b639"
 		},
 		{
+			"ImportPath": "github.com/magiconair/properties",
+			"Comment": "v1.5.2",
+			"Rev": "d5929c67198951106f49f7ea425198d0f1a08f7f"
+		},
+		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
 			"Rev": "740c764bc6149d3f1806231418adb9f52c11bcbf"
 		},
@@ -59,10 +64,6 @@
 			"Rev": "83fd92627cc9834ceccb85544b1fab7bf52150a0"
 		},
 		{
-			"ImportPath": "github.com/stretchr/graceful",
-			"Rev": "1302e8f6efee4be1ed63e592b4a8a95a245a66ba"
-		},
-		{
 			"ImportPath": "github.com/stretchr/testify/assert",
 			"Rev": "410219ae829b24af99a4d48a79858f23d0be42ee"
 		},
@@ -71,8 +72,17 @@
 			"Rev": "4796b5bc747483bf9b20a50b2c80e00ed2c85fab"
 		},
 		{
-			"ImportPath": "gopkg.in/yaml.v1",
-			"Rev": "9f9df34309c04878acc86042b16630b0f696e1de"
+			"ImportPath": "golang.org/x/net/netutil",
+			"Rev": "6acef71eb69611914f7a30939ea9f6e194c78172"
+		},
+		{
+			"ImportPath": "gopkg.in/tylerb/graceful.v1",
+			"Comment": "v1.2.4",
+			"Rev": "119c58e176bce26fd40698146d9a106c8f1723a5"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "53feefa2559fb8dfa8d81baad31be332c97d6c77"
 		}
 	]
 }
